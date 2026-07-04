@@ -134,6 +134,6 @@ If PostgreSQL fails to start on Linux with a `Permission denied` error for `/var
 ## Ollama Connection Refused or Not Found
 
 If you run `python -m build_your_own_rag.cli ask ...` and get a `GenerationError: Failed to connect to Ollama`:
-1. Ensure Ollama is running natively or via docker (`docker compose --profile llm up -d`).
-2. Verify the model is downloaded: `ollama list`. If your `OLLAMA_MODEL` is `granite3.3:8b`, run `ollama pull granite3.3:8b`.
-3. Check `OLLAMA_BASE_URL` in your `.env` file if you are running it on a different port or host.
+1. Ensure Ollama is running natively or via docker (`docker compose --profile llm up -d`)
+2. Verify the model is downloaded: `ollama list`. If your `OLLAMA_MODEL` is `granite3.3:8b`, run `ollama pull granite3.3:8b`
+3. Check `OLLAMA_BASE_URL` in your `.env` file if you are running it on a different port or host
