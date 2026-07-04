@@ -1,0 +1,6 @@
+# CPU-first install helper for Linux/Docker environments.
+#
+# Use this before installing requirements.txt when you want to avoid NVIDIA
+# CUDA wheels on machines that do not have NVIDIA GPUs.
+torch>=2.2,<3
+
