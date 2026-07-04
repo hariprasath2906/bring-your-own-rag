@@ -21,9 +21,10 @@ RUN apt-get update \
 COPY requirements.txt .
 COPY requirements-cpu.txt .
 
-# Install CPU PyTorch first so Docling/sentence-transformers reuse it instead
-# of pulling CUDA/NVIDIA wheels through transitive dependencies. The PyTorch
-# CPU wheel index is reliable for Linux x86_64; Linux arm64 uses PyPI wheels.
+# Install the CPU PyTorch stack first so Docling, EasyOCR, and
+# sentence-transformers reuse it instead of pulling CUDA/NVIDIA wheels through
+# transitive dependencies. The PyTorch CPU wheel index is reliable for Linux
+# x86_64; Linux arm64 uses PyPI wheels.
 ARG TORCH_CPU_INDEX_URL=https://download.pytorch.org/whl/cpu
 RUN set -eux; \
     arch="$(uname -m)"; \

@@ -96,7 +96,7 @@ New-Item -ItemType Directory -Force data
 This MVP is CPU-first.
 
 - Windows/macOS/Linux host installs use `requirements.txt`.
-- Docker installs CPU PyTorch before Docling and sentence-transformers.
+- Docker installs CPU PyTorch and torchvision before Docling, EasyOCR, and sentence-transformers.
 - Linux x86_64 Docker builds use the official PyTorch CPU wheel index.
 - Linux arm64 Docker builds use PyPI because CPU wheel availability differs by architecture.
 

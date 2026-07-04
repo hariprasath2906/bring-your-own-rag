@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import importlib.util
 from typing import Any
 
 from build_your_own_rag.models import (
@@ -32,11 +33,25 @@ def parse_pdf(source: SourceDocument, strategy: ExtractionStrategy) -> ParsedDoc
         logger.info("Docling parse successful", extra={"extra_info": {"source_id": source.source_id}})
     except Exception as exc:  # pragma: no cover - depends on optional Docling runtime
         docling_error = str(exc)
+        if strategy.uses_ocr:
+            logger.error(
+                "Docling OCR parse failed",
+                exc_info=exc,
+                extra={
+                    "extra_info": {
+                        "source_id": source.source_id,
+                        "strategy": strategy.value,
+                        "error": docling_error,
+                    }
+                },
+            )
+            raise PdfParseError(f"{strategy.value} extraction failed: {docling_error}") from exc
+
         parser_name = "pypdf_fallback"
         status = "fallback"
         logger.warning(
-            "Docling parse failed, falling back to pypdf", 
-            exc_info=exc, 
+            "Docling parse failed, falling back to pypdf",
+            exc_info=exc,
             extra={"extra_info": {"source_id": source.source_id, "error": docling_error}}
         )
 
@@ -45,7 +60,7 @@ def parse_pdf(source: SourceDocument, strategy: ExtractionStrategy) -> ParsedDoc
         pages, pdf_metadata = _extract_with_pypdf(source)
     except Exception as exc:
         logger.error(
-            "Failed to extract PDF text with pypdf", 
+            "Failed to extract PDF text with pypdf",
             exc_info=exc,
             extra={"extra_info": {"source_id": source.source_id, "path": str(source.path)}}
         )
@@ -106,7 +121,7 @@ def parse_pdf(source: SourceDocument, strategy: ExtractionStrategy) -> ParsedDoc
 def _parse_with_docling(source: SourceDocument, strategy: ExtractionStrategy) -> str:
     try:
         from docling.datamodel.base_models import InputFormat
-        from docling.datamodel.pipeline_options import EasyOcrOptions, PdfPipelineOptions
+        from docling.datamodel.pipeline_options import PdfPipelineOptions
         from docling.document_converter import DocumentConverter, PdfFormatOption
     except Exception as exc:
         raise RuntimeError("Docling is not installed. Install requirements or use the Docker app image.") from exc
@@ -115,12 +130,16 @@ def _parse_with_docling(source: SourceDocument, strategy: ExtractionStrategy) ->
     pipeline_options.do_ocr = strategy.uses_ocr
     pipeline_options.do_table_structure = strategy != ExtractionStrategy.FAST
 
-    try:
-        pipeline_options.ocr_options = EasyOcrOptions(lang=["en"])
-    except TypeError:
-        pipeline_options.ocr_options = EasyOcrOptions()
-        if hasattr(pipeline_options.ocr_options, "lang"):
-            pipeline_options.ocr_options.lang = ["en"]
+    if strategy.uses_ocr:
+        _ensure_easyocr_available(strategy)
+        from docling.datamodel.pipeline_options import EasyOcrOptions
+
+        try:
+            pipeline_options.ocr_options = EasyOcrOptions(lang=["en"])
+        except TypeError:
+            pipeline_options.ocr_options = EasyOcrOptions()
+            if hasattr(pipeline_options.ocr_options, "lang"):
+                pipeline_options.ocr_options.lang = ["en"]
 
     if strategy == ExtractionStrategy.OCR_ONLY:
         for attr in ("force_full_page_ocr", "force_ocr", "ocr_only"):
@@ -140,6 +159,15 @@ def _parse_with_docling(source: SourceDocument, strategy: ExtractionStrategy) ->
     if hasattr(document, "export_to_text"):
         return document.export_to_text()
     return str(document)
+
+
+def _ensure_easyocr_available(strategy: ExtractionStrategy) -> None:
+    if importlib.util.find_spec("easyocr") is not None:
+        return
+    raise RuntimeError(
+        f"{strategy.value} extraction requires EasyOCR. "
+        "Install requirements.txt or run `python -m pip install easyocr`."
+    )
 
 
 def _extract_with_pypdf(source: SourceDocument) -> tuple[list[ParsedPage], dict[str, Any]]:

@@ -36,6 +36,13 @@ cp .env.example .env
   - `POSTGRES_HOST=postgres`
   - `OLLAMA_BASE_URL=http://host.docker.internal:11434` (on Mac/Windows)
 
+Retrieval chunking is controlled by `CHUNK_TARGET_TOKENS`, `CHUNK_OVERLAP_TOKENS`, and `WORD_TOKEN_RATIO`.
+The default baseline is `CHUNK_TARGET_TOKENS=350` with `CHUNK_OVERLAP_TOKENS=50` for `BAAI/bge-base-en-v1.5`. This keeps chunks below the embedding model's 512-token input window while preserving enough context across boundaries for retrieval.
+
+Chunking is structural first: markdown headers, paragraph breaks, and sentence boundaries are preferred before falling back to word windows. When tuning retrieval quality, try values such as `300/50`, `350/50`, and `384/64`, then re-run ingestion so stored chunks and embeddings are rebuilt with the new setting. `CHUNK_OVERLAP_RATIO` is still accepted as a legacy fallback when `CHUNK_OVERLAP_TOKENS` is not set.
+
+Parent-child retrieval is a future option if we later want smaller embedded child chunks with larger parent context passed to generation. That would be a separate retrieval/schema change, not part of the current baseline.
+
 ---
 
 ### 2. Run Migrations
@@ -72,7 +79,9 @@ python -m pip install -r requirements.txt
 $env:PYTHONPATH = "src"
 ```
 
-On Apple Silicon macOS and most CPU-only host installs, normal `python -m pip install -r requirements.txt` should not require NVIDIA CUDA packages. For Docker/Linux builds, the Dockerfile preinstalls CPU PyTorch before installing Docling and sentence-transformers.
+On Apple Silicon macOS and most CPU-only host installs, normal `python -m pip install -r requirements.txt` should not require NVIDIA CUDA packages. For Docker/Linux builds, the Dockerfile preinstalls CPU PyTorch and torchvision before installing Docling, EasyOCR, and sentence-transformers.
+
+`easyocr` is declared as a direct dependency because Docling needs it for OCR-backed parsing. Install `requirements.txt` before using `HI_RES` or `OCR_ONLY`; otherwise those strategies cannot perform OCR extraction reliably. The `FAST` strategy does not use OCR.
 
 Run migrations:
 
@@ -161,6 +170,7 @@ For dependency-light plumbing checks only, set `USE_HASH_EMBEDDINGS=1`. Real MVP
 ## Notes
 
 - Docling and sentence-transformers are intentionally installed through dependencies, not vendored into this repo.
+- EasyOCR is installed as a direct dependency for Docling `HI_RES` and `OCR_ONLY` extraction strategies.
 - This MVP is CPU-first. NVIDIA CUDA packages are not required for normal Windows, macOS, or Linux CPU local runs.
 - The local database is PostgreSQL with pgvector. It is functionally close enough for MVP validation but not identical to Aurora PostgreSQL.
 - S3/SNS/SQS, ECS Fargate, Aurora production sizing, and document-level ACLs are deferred.

@@ -36,6 +36,25 @@ pip install -r requirements.txt
 
 Or run through the Docker app image.
 
+## EasyOCR is missing for `HI_RES` or `OCR_ONLY`
+
+Docling uses EasyOCR for OCR-backed extraction strategies, but EasyOCR is not guaranteed to arrive through Docling's default dependency set. This project declares `easyocr` directly in `requirements.txt`.
+
+Install or refresh dependencies:
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+For Docker/Linux CPU builds, keep the CPU-first preinstall before `requirements.txt` so EasyOCR's PyTorch stack stays CPU-oriented:
+
+```bash
+python -m pip install --index-url https://download.pytorch.org/whl/cpu -r requirements-cpu.txt
+python -m pip install -r requirements.txt
+```
+
+If OCR is not needed, use `--strategy FAST`.
+
 ## Embedding model download fails
 
 The real MVP uses `BAAI/bge-base-en-v1.5`. First run requires network access to download the model unless it is already cached.

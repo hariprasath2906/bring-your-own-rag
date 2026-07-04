@@ -1,9 +1,10 @@
 # Core ML/document dependencies.
 #
 # Do not add CUDA/NVIDIA packages here. The Dockerfile preinstalls CPU-only
-# PyTorch before installing this file so transitive dependencies from Docling
-# or sentence-transformers reuse the CPU build.
+# PyTorch/torchvision before installing this file so transitive dependencies
+# from Docling, EasyOCR, or sentence-transformers reuse the CPU build.
 docling>=2.0.0
+easyocr>=1.7.0
 pypdf>=4.0.0
 sentence-transformers>=3.0.0
 psycopg[binary,pool]>=3.2.0

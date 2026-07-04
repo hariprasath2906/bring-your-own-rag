@@ -25,6 +25,8 @@ Copy `.env.example` to `.env` and set:
   - `POSTGRES_HOST=postgres`
   - `OLLAMA_BASE_URL=http://host.docker.internal:11434` (on Mac/Windows)
 
+Chunking defaults to `CHUNK_TARGET_TOKENS=350`, with `CHUNK_OVERLAP_TOKENS=50`. The chunker prefers markdown headers, paragraph breaks, and sentence boundaries before falling back to word windows. If you tune the chunk target or overlap, re-run ingestion so the database stores chunks and embeddings created with the new value.
+
 ---
 
 ## Run Migrations
@@ -51,7 +53,9 @@ For host execution on Windows, macOS, or Linux:
 python -m pip install -r requirements.txt
 ```
 
-For Docker/Linux CPU execution, the Dockerfile installs PyTorch before `requirements.txt`. Linux x86_64 uses the official PyTorch CPU wheel index. Linux arm64 uses PyPI because wheel availability differs by architecture. This prevents accidental NVIDIA CUDA dependency downloads when the MVP is intended to run on CPU.
+For Docker/Linux CPU execution, the Dockerfile installs PyTorch and torchvision before `requirements.txt`. Linux x86_64 uses the official PyTorch CPU wheel index. Linux arm64 uses PyPI because wheel availability differs by architecture. This prevents accidental NVIDIA CUDA dependency downloads when the MVP is intended to run on CPU.
+
+`easyocr` is included in `requirements.txt` as a direct dependency for Docling `HI_RES` and `OCR_ONLY` extraction. The `FAST` strategy does not use OCR.
 
 ## Run Pipeline
 
