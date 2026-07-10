@@ -14,6 +14,8 @@ SUPPORTED_EXTENSIONS: dict[str, dict[str, str]] = {
     ".md": {"source_type": "local_md", "mime_type": "text/markdown"},
     ".txt": {"source_type": "local_txt", "mime_type": "text/plain"},
     ".docx": {"source_type": "local_docx", "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"},
+    ".html": {"source_type": "local_html", "mime_type": "text/html"},
+    ".htm": {"source_type": "local_html", "mime_type": "text/html"},
 }
 
 
