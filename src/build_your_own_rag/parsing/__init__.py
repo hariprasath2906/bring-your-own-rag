@@ -23,6 +23,7 @@ from build_your_own_rag.parsing.markdown_parser import parse_markdown  # noqa: F
 from build_your_own_rag.parsing.text_parser import parse_text  # noqa: F401
 from build_your_own_rag.parsing.docx_parser import parse_docx  # noqa: F401
 from build_your_own_rag.parsing.html_parser import parse_html  # noqa: F401
+from build_your_own_rag.parsing.pptx_parser import parse_pptx  # noqa: F401
 
 register_parser(".pdf", parse_pdf)
 register_parser(".md", parse_markdown)
@@ -30,3 +31,4 @@ register_parser(".txt", parse_text)
 register_parser(".docx", parse_docx)
 register_parser(".html", parse_html)
 register_parser(".htm", parse_html)
+register_parser(".pptx", parse_pptx)

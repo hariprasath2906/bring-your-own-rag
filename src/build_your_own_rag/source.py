@@ -16,6 +16,7 @@ SUPPORTED_EXTENSIONS: dict[str, dict[str, str]] = {
     ".docx": {"source_type": "local_docx", "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"},
     ".html": {"source_type": "local_html", "mime_type": "text/html"},
     ".htm": {"source_type": "local_html", "mime_type": "text/html"},
+    ".pptx": {"source_type": "local_pptx", "mime_type": "application/vnd.openxmlformats-officedocument.presentationml.presentation"},
 }
 
 
