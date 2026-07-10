@@ -28,8 +28,23 @@ def build_chunks(parsed: ParsedDocument) -> list[ChunkRecord]:
     chunks: list[ChunkRecord] = []
     chunk_index = 0
 
-    if parsed.parser_name == "docling" and parsed.text.strip():
-        # Docling output is structured markdown; chunk the whole text structurally to preserve tables.
+    # ── Chunking strategy dispatch ─────────────────────────────────────
+    # Parsers that produce a single unified text (e.g., Docling-based
+    # parsers for PDF/DOCX/PPTX, or native text parsers for .md/.txt)
+    # populate ``parsed.text`` with the full document content.  These
+    # take the structural path which chunks the entire text while
+    # preserving markdown tables.
+    #
+    # Parsers that only produce per-page text (e.g., pypdf fallback)
+    # leave ``parsed.text`` empty and populate ``parsed.pages``.  These
+    # take the per-page path which chunks each page independently.
+    #
+    # New parsers: populate ``parsed.text`` for full-document chunking.
+    # Only use the pages-only path if your parser cannot produce
+    # consolidated text (e.g., a raw PDF page extractor).
+    # ──────────────────────────────────────────────────────────────────
+    if parsed.text.strip():
+        # Full-document text available; chunk the whole text structurally to preserve tables.
         text_chunks = _split_text_structurally(parsed.text, target=word_target, overlap=overlap)
         for content in text_chunks:
             normalized = content.strip()

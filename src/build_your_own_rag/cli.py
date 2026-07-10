@@ -34,22 +34,22 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Local RAG MVP CLI")
     subparsers = parser.add_subparsers(required=True)
 
-    inspect_parser = subparsers.add_parser("inspect-source", help="Inspect a local absolute PDF path")
+    inspect_parser = subparsers.add_parser("inspect-source", help="Inspect a local file path")
     inspect_parser.add_argument("--path", required=True)
     inspect_parser.set_defaults(func=_inspect_source)
 
-    parse_parser = subparsers.add_parser("parse", help="Parse a PDF")
+    parse_parser = subparsers.add_parser("parse", help="Parse a document")
     parse_parser.add_argument("--path", required=True)
     parse_parser.add_argument("--strategy", default="FAST", choices=[item.value for item in ExtractionStrategy])
     parse_parser.add_argument("--show-metadata", action="store_true")
     parse_parser.set_defaults(func=_parse)
 
-    chunk_parser = subparsers.add_parser("chunk", help="Parse and chunk a PDF")
+    chunk_parser = subparsers.add_parser("chunk", help="Parse and chunk a document")
     chunk_parser.add_argument("--path", required=True)
     chunk_parser.add_argument("--strategy", default="FAST", choices=[item.value for item in ExtractionStrategy])
     chunk_parser.set_defaults(func=_chunk)
 
-    embed_parser = subparsers.add_parser("embed", help="Embed PDF chunks")
+    embed_parser = subparsers.add_parser("embed", help="Embed document chunks")
     embed_parser.add_argument("--path", required=True)
     embed_parser.add_argument("--strategy", default="FAST", choices=[item.value for item in ExtractionStrategy])
     embed_parser.add_argument("--limit", type=int, default=3)
@@ -58,7 +58,7 @@ def build_parser() -> argparse.ArgumentParser:
     migrate_parser = subparsers.add_parser("migrate", help="Run database migrations")
     migrate_parser.set_defaults(func=_migrate)
 
-    ingest_parser = subparsers.add_parser("ingest", help="Ingest a PDF into PostgreSQL")
+    ingest_parser = subparsers.add_parser("ingest", help="Ingest a document into PostgreSQL")
     ingest_parser.add_argument("--path", required=True)
     ingest_parser.add_argument("--strategy", default="FAST", choices=[item.value for item in ExtractionStrategy])
     ingest_parser.set_defaults(func=_ingest)

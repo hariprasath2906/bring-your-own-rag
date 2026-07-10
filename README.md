@@ -1,11 +1,13 @@
 # Build Your Own RAG
 
-Cross-platform local MVP for a PDF-first RAG ingestion and retrieval pipeline. The project is intended to run on Windows, macOS, and Linux.
+Cross-platform local MVP for a multi-format RAG ingestion and retrieval pipeline. The project is intended to run on Windows, macOS, and Linux.
+
+Supported document formats: **PDF**, **DOCX**, **PPTX**, **XLSX**, **CSV**, **HTML**, **Markdown**, **Plain Text**, **AsciiDoc**, and **Images** (via OCR). New formats are added iteratively through a parser registry.
 
 The initial flow is:
 
 ```text
-absolute PDF path -> parse -> metadata -> chunk -> embed -> PostgreSQL pgvector -> hybrid retrieval -> Ollama LLM -> generated answer
+absolute file path -> parse -> metadata -> chunk -> embed -> PostgreSQL pgvector -> hybrid retrieval -> Ollama LLM -> generated answer
 ```
 
 ## Local Runtime

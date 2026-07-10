@@ -64,8 +64,10 @@ class ParsedDocument:
     pages: list[ParsedPage]
     metadata: DocumentMetadata
     parser_name: str
-    strategy: ExtractionStrategy
-    ocr_used: bool
+    # strategy is None for formats where ExtractionStrategy doesn't apply
+    # (e.g., Markdown, plain text, CSV).
+    strategy: ExtractionStrategy | None = None
+    ocr_used: bool = False
     status: str = "success"
 
 

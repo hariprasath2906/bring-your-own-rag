@@ -3,8 +3,8 @@ from __future__ import annotations
 from build_your_own_rag.chunking import build_chunks
 from build_your_own_rag.embeddings import embed_texts
 from build_your_own_rag.models import ExtractionStrategy, IngestionRun, ParsedDocument, SourceDocument, GenerationResult, RetrievalMode
-from build_your_own_rag.parsing.docling_parser import parse_pdf
-from build_your_own_rag.source import inspect_local_pdf
+from build_your_own_rag.parsing import parse_document
+from build_your_own_rag.source import inspect_local_file
 from build_your_own_rag.storage.postgres import PostgresStore
 from build_your_own_rag.retrieval.hybrid import retrieve
 from build_your_own_rag.generation.ollama import generate
@@ -15,13 +15,13 @@ logger = get_logger(__name__)
 
 def inspect_source(path: str) -> SourceDocument:
     logger.info("Inspecting source document", extra={"extra_info": {"path": path}})
-    return inspect_local_pdf(path)
+    return inspect_local_file(path)
 
 
 def parse_source(path: str, strategy: ExtractionStrategy) -> ParsedDocument:
     source = inspect_source(path)
     logger.info("Parsing source document", extra={"extra_info": {"source_id": source.source_id, "strategy": strategy.value}})
-    return parse_pdf(source, strategy)
+    return parse_document(source, strategy)
 
 
 def chunk_source(path: str, strategy: ExtractionStrategy):

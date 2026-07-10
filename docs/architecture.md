@@ -4,8 +4,8 @@
 
 ```mermaid
 flowchart LR
-    PDF["Local PDF"] --> CLI["CLI"]
-    CLI --> Parser["Docling Parser"]
+    Doc["Local Document"] --> CLI["CLI"]
+    CLI --> Parser["Parser Registry"]
     Parser --> Metadata["Metadata"]
     Parser --> Chunker["Chunker"]
     Chunker --> Embedder["Embedding Model"]
@@ -31,6 +31,23 @@ flowchart LR
 ```
 
 The local MVP validates parsing, metadata extraction, chunking, embeddings, versioned ingestion, hybrid retrieval, and local LLM generation via Ollama. AWS integration is intentionally deferred until the local path is stable.
+
+## Supported Formats
+
+| Format | Extension(s) | Parser | Fallback |
+| --- | --- | --- | --- |
+| PDF | `.pdf` | Docling | pypdf |
+| Markdown | `.md` | Native | — |
+| Plain Text | `.txt` | Native | — |
+| DOCX | `.docx` | Docling | python-docx |
+| HTML | `.html`, `.htm` | Docling | beautifulsoup4 |
+| PPTX | `.pptx` | Docling | python-pptx |
+| CSV | `.csv` | Native (row-wise) | — |
+| XLSX | `.xlsx` | openpyxl (row-wise) | — |
+| AsciiDoc | `.adoc` | Docling | text fallback |
+| Images | `.png`, `.jpg`, `.jpeg`, `.tiff` | Docling + OCR | — |
+
+Formats are added iteratively through a parser registry. The pipeline automatically dispatches to the correct parser based on file extension.
 
 ## Runtime Dependency Position
 
@@ -71,7 +88,7 @@ Activation is done in one database transaction after chunks are inserted. Retrie
 | Failure | Behavior |
 | --- | --- |
 | Invalid path | CLI exits with a clear validation error. |
-| Non-PDF file | CLI rejects input for MVP. |
+| Non-PDF file | CLI rejects unsupported extensions with a clear message listing supported formats. |
 | Docling missing | Parser reports dependency error; Docker image installs Docling. |
 | EasyOCR missing for OCR strategy | Parser reports an EasyOCR dependency error; install `requirements.txt` or use `FAST`. |
 | CUDA packages downloaded on CPU-only machines | Treat as dependency misconfiguration; use CPU-first Docker install and avoid forcing the wrong Docker architecture. |

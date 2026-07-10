@@ -59,7 +59,9 @@ For Docker/Linux CPU execution, the Dockerfile installs PyTorch and torchvision 
 
 ## Run Pipeline
 
-Copy any PDF to `data/sample.pdf`.
+Copy any supported document to the `data/` directory (e.g., `data/sample.pdf`, `data/notes.md`, `data/report.docx`).
+
+The pipeline supports: `.pdf`, `.md`, `.txt`, `.docx`, `.html`, `.htm`, `.pptx`, `.csv`, `.xlsx`, `.adoc`, `.png`, `.jpg`, `.jpeg`, `.tiff`
 
 macOS/Linux:
 

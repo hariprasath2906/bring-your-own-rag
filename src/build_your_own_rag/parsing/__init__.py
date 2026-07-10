@@ -1,2 +1,25 @@
-"""Parsing adapters."""
+"""Parsing adapters.
 
+This package provides a unified ``parse_document()`` entry point that
+dispatches to format-specific parsers based on the source file's extension.
+
+Parsers are registered via the ``parser_registry`` module.  Each format
+module (e.g. ``docling_parser``) registers its handler(s) when this
+package is first imported.
+"""
+
+from build_your_own_rag.parsing.parser_registry import (  # noqa: F401
+    parse_document,
+    register_parser,
+    registered_extensions,
+)
+
+# ── Register built-in parsers ────────────────────────────────────────────
+# Each import triggers the module-level ``register_parser()`` call inside
+# each format module. New format modules should follow the same pattern
+# and be imported here.
+from build_your_own_rag.parsing.docling_parser import parse_pdf  # noqa: F401
+from build_your_own_rag.parsing.markdown_parser import parse_markdown  # noqa: F401
+
+register_parser(".pdf", parse_pdf)
+register_parser(".md", parse_markdown)
