@@ -4,3 +4,5 @@
 # CUDA wheels on machines that do not have NVIDIA GPUs.
 torch>=2.2,<3
 torchvision>=0.17,<1
+
+python-docx==1.1.2

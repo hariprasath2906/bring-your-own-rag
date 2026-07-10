@@ -13,6 +13,7 @@ SUPPORTED_EXTENSIONS: dict[str, dict[str, str]] = {
     ".pdf": {"source_type": "local_pdf", "mime_type": "application/pdf"},
     ".md": {"source_type": "local_md", "mime_type": "text/markdown"},
     ".txt": {"source_type": "local_txt", "mime_type": "text/plain"},
+    ".docx": {"source_type": "local_docx", "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"},
 }
 
 
