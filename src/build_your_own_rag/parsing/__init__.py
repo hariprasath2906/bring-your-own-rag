@@ -26,6 +26,8 @@ from build_your_own_rag.parsing.html_parser import parse_html  # noqa: F401
 from build_your_own_rag.parsing.pptx_parser import parse_pptx  # noqa: F401
 from build_your_own_rag.parsing.csv_parser import parse_csv  # noqa: F401
 from build_your_own_rag.parsing.xlsx_parser import parse_xlsx  # noqa: F401
+from build_your_own_rag.parsing.asciidoc_parser import parse_asciidoc  # noqa: F401
+from build_your_own_rag.parsing.image_parser import parse_image  # noqa: F401
 
 register_parser(".pdf", parse_pdf)
 register_parser(".md", parse_markdown)
@@ -36,3 +38,8 @@ register_parser(".htm", parse_html)
 register_parser(".pptx", parse_pptx)
 register_parser(".csv", parse_csv)
 register_parser(".xlsx", parse_xlsx)
+register_parser(".adoc", parse_asciidoc)
+register_parser(".asciidoc", parse_asciidoc)
+register_parser(".png", parse_image)
+register_parser(".jpg", parse_image)
+register_parser(".jpeg", parse_image)

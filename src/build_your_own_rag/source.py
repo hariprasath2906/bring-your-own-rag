@@ -19,6 +19,11 @@ SUPPORTED_EXTENSIONS: dict[str, dict[str, str]] = {
     ".pptx": {"source_type": "local_pptx", "mime_type": "application/vnd.openxmlformats-officedocument.presentationml.presentation"},
     ".csv": {"source_type": "local_csv", "mime_type": "text/csv"},
     ".xlsx": {"source_type": "local_xlsx", "mime_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
+    ".adoc": {"source_type": "local_asciidoc", "mime_type": "text/asciidoc"},
+    ".asciidoc": {"source_type": "local_asciidoc", "mime_type": "text/asciidoc"},
+    ".png": {"source_type": "local_image", "mime_type": "image/png"},
+    ".jpg": {"source_type": "local_image", "mime_type": "image/jpeg"},
+    ".jpeg": {"source_type": "local_image", "mime_type": "image/jpeg"},
 }
 
 
